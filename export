@@ -1,0 +1,2 @@
+#!/bin/bash
+scp ./dist/* anst0821@euclid.colorado.edu:public_html/

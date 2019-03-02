@@ -1,7 +1,3 @@
 node_modules
-build
-dist
+dist/bundle.js
 export
-npm-debug.log
-.env
-.DS_Store

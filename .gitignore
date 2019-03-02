@@ -1,7 +1,7 @@
 node_modules
 build
 dist
-export_to_euclid
+export
 npm-debug.log
 .env
 .DS_Store

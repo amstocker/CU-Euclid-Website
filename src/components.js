@@ -1,8 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 import Nav from "./nav.js";
-import Page, { PageMap } from "./page.js";
+import Page from "./page.js";
 import style from "./style.less";
 
 
@@ -18,7 +17,7 @@ export default class extends React.Component {
     stateFromHash() {
         const hash = window.location.hash;
         return {
-            page: PageMap[hash.slice(1)] || PageMap.Home
+            page: this.props.map[hash.slice(1)] || this.props.map.Home
         };
     }
 
@@ -29,7 +28,7 @@ export default class extends React.Component {
     render() {
         return (
             <div className={style.main}>
-                <Nav />
+                <Nav pages={Object.values(this.props.map)} />
                 <Page page={this.state.page} />
             </div>
         );

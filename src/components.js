@@ -6,15 +6,10 @@ import Page, { PageMap } from "./page.js";
 import style from "./style.less";
 
 
-
-
 export default class extends React.Component {
     constructor(props) {
         super(props);
         this.state = this.stateFromHash();
-        
-        // To pass to Nav
-        this.clickHandler = this.clickHandler.bind(this);
         
         // Handle back button
         window.onpopstate = this.popstateHandler.bind(this);
@@ -22,31 +17,19 @@ export default class extends React.Component {
 
     stateFromHash() {
         const hash = window.location.hash;
-        return this.stateFromDest(
-            hash ? hash.slice(1) : ''
-        );
+        return {
+            page: PageMap[hash.slice(1)] || PageMap.Home
+        };
     }
 
     popstateHandler() {
         this.setState(this.stateFromHash());
     }
 
-    stateFromDest(dest) {
-        const page = PageMap[dest];
-        return {
-            page: page || PageMap.Home
-        };
-    }
-
-    clickHandler(dest) {
-        window.location.hash = dest;
-        this.setState(this.stateFromDest(dest));
-    }
-
     render() {
         return (
             <div className={style.main}>
-                <Nav clickHandler={this.clickHandler} />
+                <Nav />
                 <Page page={this.state.page} />
             </div>
         );

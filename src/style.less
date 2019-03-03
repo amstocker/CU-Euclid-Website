@@ -1,18 +1,26 @@
 @bg-grey: #f7f7f7;
+@content-pad: 10px;
 
 
 .main {
     margin: 0px;
     padding-left: 10%;
     padding-right: 10%;
+    overflow: auto;
     background-color: @bg-grey;
 }
 
 .page {
     width: 100%;
+    padding: @content-pad;
 }
 
 .nav {
     float: left;
     width: 120px;
+    margin: @content-pad;
+}
+
+.link {
+    text-align: right;
 }

@@ -1,15 +1,19 @@
 import React from 'react';
+import Markdown from 'react-markdown';
+
 import style from './style.less';
+import home_md from './pages/Home.md';
+import teaching_md from './pages/Teaching.md';
 
 
 export const PageMap = {
     Home: {
         name: "Home",
-        content: "Hello"
+        content: <Markdown source={home_md} />
     },
     Teaching: {
         name: "Teaching",
-        content: <a href="#Home">test</a>
+        content: <Markdown source={teaching_md} />
     }
 };
 

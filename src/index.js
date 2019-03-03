@@ -5,6 +5,6 @@ import Main from './components.js';
 
 
 ReactDOM.render(
-  <Main />,
-  document.getElementById('app')
+    <Main />,
+    document.getElementById('app')
 );

@@ -1,26 +1,39 @@
-@bg-grey: #f7f7f7;
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Lato&.css);
+
+// Colors
+@bg-grey: #fafbfc;
+@content-color: #fff;
+@border-color: #e1e4e8;
+
+// Vars
+@nav-width: 120px;
 @content-pad: 10px;
 
 
 .main {
-    margin: 0px;
-    padding-left: 10%;
-    padding-right: 10%;
-    overflow: auto;
-    background-color: @bg-grey;
-}
+    width: 960px;
+    margin: auto;
 
-.page {
-    width: 100%;
-    padding: @content-pad;
+    font-family: 'Lato', sans-serif;
 }
 
 .nav {
     float: left;
-    width: 120px;
-    margin: @content-pad;
+    width: @nav-width;
+    padding: @content-pad;
+    background-color: @content-color;
+    border: 1px solid @border-color;
 }
 
 .link {
     text-align: right;
+}
+
+.page {
+    margin-top: @content-pad;
+    margin-left: @nav-width + 3 * @content-pad;
+    padding: 3 * @content-pad;
+    background-color: @content-color;
+    border: 1px solid @border-color;
 }

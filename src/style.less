@@ -1,3 +1,5 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 // Colors
 @grey-dark: #e1e4e8;
@@ -9,7 +11,16 @@
 @header-height: 180px;
 @nav-width: 120px;
 @content-pad: 10px;
+@content-space: 6px;
 
+
+html {
+    background: @grey-med;
+}
+
+body {
+    margin: 0px;
+}
 
 .main {
     width: @main-width;
@@ -22,10 +33,12 @@
 .header {
     width: @main-width;
     height: @header-height;
+    margin-bottom: @content-space;
 
     canvas {
         width: 100%;
         height: 100%;
+        background-color: @grey-light;
     }
 }
 
@@ -44,7 +57,7 @@
 }
 
 .page {
-    margin-left: @nav-width + 3 * @content-pad;
+    margin-left: @nav-width + 2 * @content-pad + @content-space;
     padding-top: @content-pad;
     padding-left: 3 * @content-pad;
     padding-bottom: 2 * @content-pad;

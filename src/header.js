@@ -1,7 +1,6 @@
 import React from 'react';
+import { setupCanvas } from './utils.js';
 
-import style from './style.less';
-import { setupCanvas, toUTF16 } from './utils.js';
 
 class Symbol {
     constructor(w, h) {
@@ -22,17 +21,18 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className={style.header} >
+            <div className={"header"} >
                 <canvas ref={this.canvas} ></canvas>
             </div>
         );
     }
 
     componentDidMount() {
-        setInterval(
-            () => window.requestAnimationFrame(this.animate),
-            1000
-        );
+        this.animate();
+        // setInterval(
+        //     () => window.requestAnimationFrame(this.animate),
+        //     1000
+        // );
     }
 
     animate() {

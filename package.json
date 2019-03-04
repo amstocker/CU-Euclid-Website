@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack --mode development",
+    "clean": "rm dist/bundle.js dist/style.css",
+    "buildjs": "webpack --mode development",
+    "buildcss": "lessc src/style.less dist/style.css",
+    "build": "run-p buildjs buildcss",
     "postbuild": "./export"
   },
   "keywords": [],
@@ -15,12 +18,10 @@
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-react": "^7.0.0",
     "babel-loader": "^8.0.5",
-    "css-loader": "^2.1.0",
+    "concurrently": "^4.1.0",
     "less": "^3.9.0",
-    "less-loader": "^4.1.0",
     "raw-loader": "^1.0.0",
     "react-markdown": "^4.0.6",
-    "style-loader": "^0.23.1",
     "webpack": "^4.29.6",
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.2.1"

@@ -10,21 +10,6 @@ module.exports = {
       {
         test: /\.md$/,
         use: ['raw-loader']
-      },
-      {
-        test: /\.less$/,
-        use: [
-          'style-loader',
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true,
-              modules: true,
-              localIdentName: "[local]___[hash:base64:5]"
-            }
-          },
-          'less-loader'
-        ]
       }
     ]
   },

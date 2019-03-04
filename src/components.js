@@ -1,13 +1,11 @@
 import React from 'react';
-
 import Header from "./header.js";
-import style from "./style.less";
 
 
 export class Nav extends React.Component {
     render() {
         return (
-            <div className={style.nav}>
+            <div className={"nav"}>
                 {this.props.pages
                     .sort((a, b) =>
                         a.index - b.index)
@@ -23,7 +21,7 @@ export class Link extends React.Component {
     render() {
         const link = `#${this.props.dest}`;
         return (
-            <div className={style.link}>
+            <div className={"link"}>
                 <a href={link}>{this.props.dest}</a>
             </div>
         );
@@ -33,7 +31,7 @@ export class Link extends React.Component {
 export class Page extends React.Component {
     render() {
         return (
-            <div className={style.page}>
+            <div className={"page"}>
                 {this.props.page.content}
             </div>
         );
@@ -65,9 +63,9 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className={style.main}>
+            <div className={"main"}>
                 <Header />
-                <div className={style.content}>
+                <div className={"content"}>
                     <Nav pages={Object.values(this.props.map)} />
                     <Page page={this.state.page} />
                 </div>

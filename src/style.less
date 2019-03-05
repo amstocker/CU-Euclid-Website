@@ -25,9 +25,6 @@ body {
 .main {
     width: @main-width;
     margin: auto;
-    
-    //font-family: 'Open Sans', sans-serif;
-    //font-size: 10pt;
 }
 
 .header {
@@ -50,6 +47,22 @@ body {
     width: @nav-width;
     padding: @content-pad;
     background-color: @grey-light;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11pt;
+
+    a, a:visited {
+        color: black;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    a:hover {
+        color: seagreen;
+    }
+
+    a:active {
+        color: skyblue;
+    }
 }
 
 .link {

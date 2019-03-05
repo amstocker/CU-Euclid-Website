@@ -38,11 +38,14 @@ export class Page extends React.Component {
         this.ref = React.createRef();
     }
 
-    componentDidMount() {
+    highlightCodeSyntax() {
         this.ref.current.querySelectorAll('pre code').forEach((block) => {
             hljs.highlightBlock(block);
         });
     }
+
+    componentDidMount() { this.highlightCodeSyntax(); }
+    componentDidUpdate() { this.highlightCodeSyntax(); }
     
     render() {
         return (

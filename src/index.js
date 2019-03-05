@@ -15,11 +15,16 @@ Object.entries(pages)
         PageMap[name] = {
             name: name,
             index: Number(filename.slice(0, split)),
-            content: <Markdown source={source} />
+            content: (
+                <div className={"markdown-body"} >
+                    <Markdown source={source} />
+                </div>
+            )
         }
     });
 
 
+// Start rendering
 ReactDOM.render(
     <Main map={PageMap} />,
     document.getElementById('app')

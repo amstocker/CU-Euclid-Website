@@ -1,4 +1,8 @@
 import React from 'react';
+import hljs from 'highlight.js/lib/highlight.js';
+import python from 'highlight.js/lib/languages/python';
+       hljs.registerLanguage('python', python);
+
 import Header from "./header.js";
 
 
@@ -29,18 +33,28 @@ export class Link extends React.Component {
 }
 
 export class Page extends React.Component {
+    constructor(props) {
+        super(props);
+        this.ref = React.createRef();
+    }
+
+    componentDidMount() {
+        this.ref.current.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
+    }
+    
     render() {
         return (
-            <div className={"page"}>
+            <div ref={this.ref} className={"page"}>
                 {this.props.page.content}
             </div>
         );
     }
 }
 
-/*
- * <Main />
- */
+
+// <Main />
 export default class extends React.Component {
     constructor(props) {
         super(props);

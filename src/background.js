@@ -20,7 +20,7 @@ export const DRAG = 0.025;
 export const CENTER = 4.2;
 
 
-class Symbol {
+class Thing {
     constructor(w, h) {
         /*
          * Random unicode from Math Operators block:
@@ -28,7 +28,7 @@ class Symbol {
          */
         //this.symbol = String.fromCharCode(0x2200 + Math.random() * (0x22FF-0x2200+1));
         this.r = Math.random() * 15 + 2;
-        this.m = 0.01 * this.r * this.r;
+        this.m = 0.1 * this.r;
         this.color = randomColor({
             luminosity: 'light',
             hue: 'green'
@@ -66,9 +66,11 @@ class Symbol {
         const [cx, cy] = Center(w, h),
               dcx = this.x - cx,
               dcy = this.y - cy,
-              dc = Math.max(Math.hypot(dcx, dcy), 10);
-        this.dx -= (CENTER / (dc)) * (dcx/dc);
-        this.dy -= (CENTER / (dc)) * (dcy/dc);
+              dc = Math.hypot(dcx, dcy);
+        if (dc > 25) {
+            this.dx -= (CENTER / (dc)) * (dcx/dc);
+            this.dy -= (CENTER / (dc)) * (dcy/dc);
+        };
 
         // finally update position
         this.x += this.dx;
@@ -90,7 +92,7 @@ export default class extends React.Component {
         super(props);
         this.canvas = React.createRef();
         this.animate = this.animate.bind(this);
-        this.symbols = [];
+        this.things = [];
     }
 
     render() {
@@ -120,9 +122,9 @@ export default class extends React.Component {
             Mouse.y = parseInt(e.clientY);
         });
         
-        this.symbols = Array.from(
+        this.things = Array.from(
             {length: N},
-            () => new Symbol(w, h)
+            () => new Thing(w, h)
         );
         
         window.requestAnimationFrame(this.animate);
@@ -132,14 +134,14 @@ export default class extends React.Component {
         const [cvs, ctx, w, h] = this.getCanvasInfo();
         
         // update all
-        for (let sym of this.symbols) sym.update(w, h);
+        for (let t of this.things) t.update(w, h);
 
         // clear background
         ctx.clearRect(0, 0, w, h);
 
         // render all
         ctx.fillStyle = "black";
-        for (let sym of this.symbols) sym.render(ctx);
+        for (let t of this.things) t.render(ctx);
 
         window.requestAnimationFrame(this.animate);
     }

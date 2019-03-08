@@ -11,6 +11,7 @@
 @content-width: 960px;
 @content-pad: 10px;
 @content-space: 6px;
+@div-bg-opacity: 95%;
 
 
 html {
@@ -53,23 +54,37 @@ body {
         .header {
             margin-bottom: @content-space;
             padding: @content-pad;
-            background-color: @grey-light;
+            background-color: fade(@grey-light, @div-bg-opacity);
         
             img {
                 width: 100%;
                 height: auto;
             }
-        
+
             .info {
-                a {
-                    display: block;
-                }
+                font-style: italic;
+                text-align: left;
+                font-size: 10pt;
+            }
+        
+            a, a:visited {
+                display: block;
+                color: black;
+                text-decoration: none;
+            }
+
+            a:hover {
+                color: hotpink;
+            }
+
+            a:active {
+                color: skyblue;
             }
         }
     
         .nav {
             padding: @content-pad;
-            background-color: @grey-light;
+            background-color: fade(@grey-light, @div-bg-opacity);
         }
         
         .link {
@@ -94,6 +109,6 @@ body {
         padding-top: 2 * @content-pad;
         padding-left: 3 * @content-pad;
         padding-bottom: 2 * @content-pad;
-        background-color: @grey-light;
+        background-color: fade(@grey-light, @div-bg-opacity);
     }
 }

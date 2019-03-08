@@ -12,11 +12,12 @@ export class Header extends React.Component {
             <div className={"header"} >
                 <img src="./me.jpg"></img>
                 <div className={"info"} >
-                    {"Andrew M. Stocker"}
-                    <a href={"mailto:andrew.stocker@colorado.edu"} target="_blank" >{"email"}</a>
-                    <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>
-                    <a href={"https://megamaster.bandcamp.com/"} target="_blank" >{"bandcamp"}</a>
+                    {"Andrew Stocker"}<br></br>
+                    {"Boulder, CO"}
                 </div>
+                <a href={"mailto:andrew.stocker@colorado.edu"} >{"email"}</a>
+                <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>
+                <a href={"https://megamaster.bandcamp.com/"} target="_blank" >{"bandcamp"}</a>
             </div>
         );
     }

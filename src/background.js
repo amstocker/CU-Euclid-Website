@@ -4,20 +4,20 @@ import randomColor from 'randomcolor';
 import { setupCanvas } from './utils.js';
 
 
-export const N = 500;
+export const N = 100;
+export const Center = (w, h) => [60, 60];
 
 // current mouse location
 export const Mouse = {
-    x: undefined,
-    y: undefined
+    x: 0,
+    y: 0
 };
 
 // forces
-export const CURSOR = 4;
+export const MOUSE = 4;
 export const RESTORE = 2;
 export const DRAG = 0.025;
-export const G = -0.01;
-
+export const CENTER = 0.01;
 
 
 class Symbol {
@@ -27,23 +27,25 @@ class Symbol {
          *  https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
          */
         //this.symbol = String.fromCharCode(0x2200 + Math.random() * (0x22FF-0x2200+1));
-        this.r = Math.floor(Math.random() * 20 + 2);
+        this.r = Math.random() * 15 + 2;
         this.color = randomColor({
             luminosity: 'light',
-            hue: 'green'
+            //hue: 'green'
         });
-        this.x = Math.floor(Math.random() * w);
-        this.y = Math.floor(4*h/5 + Math.random() * h/5);
+
+        const [cx, cy] = Center(w, h);
+        this.x = cx + Math.random();
+        this.y = cy + Math.random();
         this.dx = 0;
         this.dy = 0;
     }
 
     update(w, h) {
-        let mx = this.x - Mouse.x,
-            my = this.y - Mouse.y,
-            md = Math.hypot(mx, my),
-            fs = Math.min(CURSOR / (md*md), 5),
-            fl = CURSOR / (md);        
+        const mx = this.x - Mouse.x,
+              my = this.y - Mouse.y,
+              md = Math.max(Math.hypot(mx, my), 0.1),
+              fs = Math.min(MOUSE / (md*md), 5),
+              fl = MOUSE / (md);
         
         // force from mouse
         this.dx += (fs-fl) * (mx/md);
@@ -60,7 +62,12 @@ class Symbol {
         this.dy -= DRAG * this.dy;
 
         // gravity
-        this.dy -= G;
+        const [cx, cy] = Center(w, h),
+              dcx = this.x - cx,
+              dcy = this.y - cy,
+              dc = Math.max(Math.hypot(dcx, dcy), 0.1);
+        this.dx -= CENTER * (dcx/dc);
+        this.dy -= CENTER * (dcy/dc);
 
         // finally update position
         this.x += this.dx;
@@ -111,6 +118,8 @@ export default class extends React.Component {
             Mouse.x = parseInt(e.clientX);
             Mouse.y = parseInt(e.clientY);
         });
+        Mouse.x = w;
+        Mouse.y = h;
         
         this.symbols = Array.from(
             {length: N},
@@ -124,8 +133,7 @@ export default class extends React.Component {
         const [cvs, ctx, w, h] = this.getCanvasInfo();
         
         // update all
-        if (Mouse.x && Mouse.y)
-            for (let sym of this.symbols) sym.update(w, h);
+        for (let sym of this.symbols) sym.update(w, h);
 
         // fill background
         ctx.fillStyle = "#ECEDEF";

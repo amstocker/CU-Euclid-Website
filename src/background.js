@@ -4,7 +4,7 @@ import randomColor from 'randomcolor';
 import { setupCanvas } from './utils.js';
 
 
-export const N = 100;
+export const N = 200;
 export const Center = (w, h) => [60, 60];
 
 // current mouse location
@@ -17,7 +17,7 @@ export const Mouse = {
 export const MOUSE = 4;
 export const RESTORE = 2;
 export const DRAG = 0.025;
-export const CENTER = 0.01;
+export const CENTER = 0.03;
 
 
 class Symbol {

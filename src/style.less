@@ -8,6 +8,7 @@
 
 // Vars
 @side-width: 180px;
+@side-border: 2px;
 @content-width: 960px;
 @content-pad: 10px;
 @content-space: 6px;
@@ -23,18 +24,14 @@ body {
 }
 
 .background {
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 100%;
     left: 0;
     top: 0;
     z-index: -1;
 
-    canvas {
-        width: 100%;
-        height: 100%;
-        background-color: @grey-light;
-    }
+    background-color: @grey-light;
 }
 
 .content {
@@ -52,8 +49,9 @@ body {
         text-align: right;
 
         .header {
-            margin-bottom: @content-space;
+            margin-bottom: @content-pad;
             padding: @content-pad;
+            border-right: @side-border solid @grey-med;
             background-color: fade(@grey-light, @div-bg-opacity);
         
             img {
@@ -78,6 +76,7 @@ body {
     
         .nav {
             padding: @content-pad;
+            border-right: @side-border solid @grey-med;
             background-color: fade(@grey-light, @div-bg-opacity);
         }
         
@@ -93,7 +92,7 @@ body {
     }
     
     .page {
-        margin-left: @side-width + @content-space;
+        margin-left: @side-width + @side-border + @content-space;
         padding-top: 3 * @content-pad;
         padding-left: 3 * @content-pad;
         padding-right: 4 * @content-pad;

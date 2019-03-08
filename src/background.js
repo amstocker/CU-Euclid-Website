@@ -4,8 +4,9 @@ import randomColor from 'randomcolor';
 import { setupCanvas } from './utils.js';
 
 
-export const N = 200;
-export const Center = (w, h) => [w/2, 4*h/5];
+const N = 200;
+const Colors = ['green', 'pink', 'blue', 'purple'];
+const Center = (w, h) => [w/2, 4*h/5];
 
 // current mouse location
 export const Mouse = {
@@ -14,14 +15,14 @@ export const Mouse = {
 };
 
 // forces
-export const MOUSE = 4;
-export const RESTORE = 2;
-export const DRAG = 0.025;
-export const CENTER = 4.2;
+const MOUSE = 4;
+const RESTORE = 2;
+const DRAG = 0.025;
+const CENTER = 4.2;
 
 
 class Thing {
-    constructor(w, h) {
+    constructor(w, h, hue) {
         /*
          * Random unicode from Math Operators block:
          *  https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
@@ -31,7 +32,7 @@ class Thing {
         this.m = 0.1 * this.r;
         this.color = randomColor({
             luminosity: 'light',
-            hue: 'green'
+            hue
         });
 
         const [cx, cy] = Center(w, h);
@@ -97,9 +98,7 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className={"background"} >
-                <canvas ref={this.canvas} ></canvas>
-            </div>
+            <canvas className={"background"} ref={this.canvas} ></canvas>
         );
     }
 
@@ -122,9 +121,10 @@ export default class extends React.Component {
             Mouse.y = parseInt(e.clientY);
         });
         
+        const hue = Colors[Math.floor(Math.random()*Colors.length)];
         this.things = Array.from(
             {length: N},
-            () => new Thing(w, h)
+            () => new Thing(w, h, hue)
         );
         
         window.requestAnimationFrame(this.animate);

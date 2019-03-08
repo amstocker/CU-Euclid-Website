@@ -21,18 +21,19 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className={"header"} >
+            <div className={"background"} >
                 <canvas ref={this.canvas} ></canvas>
             </div>
         );
     }
 
     componentDidMount() {
+        window.addEventListener("resize", this.animate);
         this.animate();
-        // setInterval(
-        //     () => window.requestAnimationFrame(this.animate),
-        //     1000
-        // );
+    }
+
+    componentDidUpdate() {
+        this.animate();
     }
 
     animate() {
@@ -41,6 +42,12 @@ export default class extends React.Component {
             w = canvas.offsetWidth,
             h = canvas.offsetHeight;
 
+        // fill background
+        ctx.fillStyle = "#ECEDEF";
+        ctx.fillRect(0, 0, w, h);
+
+        // draw symbols
+        ctx.fillStyle = "black";
         ctx.font = "36px";
         for (var i = 0; i < 1000; i++) {
             ctx.fillText(

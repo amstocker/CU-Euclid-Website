@@ -3,8 +3,24 @@ import hljs from 'highlight.js/lib/highlight.js';
 import python from 'highlight.js/lib/languages/python';
        hljs.registerLanguage('python', python);
 
-import Header from "./header.js";
+import Background from "./background.js";
 
+
+export class Header extends React.Component {
+    render() {
+        return (
+            <div className={"header"} >
+                <img src="./me.jpg"></img>
+                <div className={"info"} >
+                    {"Andrew M. Stocker"}
+                    <a href={"mailto:andrew.stocker@colorado.edu"} target="_blank" >{"email"}</a>
+                    <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>
+                    <a href={"https://megamaster.bandcamp.com/"} target="_blank" >{"bandcamp"}</a>
+                </div>
+            </div>
+        );
+    }
+}
 
 export class Nav extends React.Component {
     render() {
@@ -80,12 +96,13 @@ export default class extends React.Component {
 
     render() {
         return (
-            <div className={"main"}>
-                <Header />
-                <div className={"content"}>
+            <div className={"content"} >
+                <Background />
+                <div className={"side"} >
+                    <Header />
                     <Nav pages={Object.values(this.props.map)} />
-                    <Page page={this.state.page} />
                 </div>
+                <Page page={this.state.page} />
             </div>
         );
     }

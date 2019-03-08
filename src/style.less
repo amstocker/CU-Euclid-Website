@@ -7,9 +7,8 @@
 @grey-light: #fafbfc;
 
 // Vars
-@main-width: 960px;
-@header-height: 180px;
-@nav-width: 90px;
+@side-width: 180px;
+@content-width: 960px;
 @content-pad: 10px;
 @content-space: 6px;
 
@@ -22,15 +21,13 @@ body {
     margin: 0px;
 }
 
-.main {
-    width: @main-width;
-    margin: auto;
-}
-
-.header {
-    width: @main-width;
-    height: @header-height;
-    margin-bottom: @content-space;
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: -1;
 
     canvas {
         width: 100%;
@@ -40,39 +37,63 @@ body {
 }
 
 .content {
-}
+    width: @content-width;
+    margin: auto;
+    margin-top: @content-space;
 
-.nav {
-    float: left;
-    width: @nav-width;
-    padding: @content-pad;
-    background-color: @grey-light;
-    font-family: 'Open Sans', sans-serif;
-    font-size: 11pt;
+    .side {
+        float: left;
+        width: @side-width;
+        
+        // font
+        font-family: 'Open Sans', sans-serif;
+        font-size: 11pt;
+        text-align: right;
 
-    a, a:visited {
-        color: black;
-        text-decoration: none;
-        font-weight: bold;
+        .header {
+            margin-bottom: @content-space;
+            padding: @content-pad;
+            background-color: @grey-light;
+        
+            img {
+                width: 100%;
+                height: auto;
+            }
+        
+            .info {
+                a {
+                    display: block;
+                }
+            }
+        }
+    
+        .nav {
+            padding: @content-pad;
+            background-color: @grey-light;
+        }
+        
+        .link {
+            a, a:visited {
+                color: black;
+                text-decoration: none;
+                font-weight: bold;
+            }
+        
+            a:hover {
+                color: seagreen;
+            }
+        
+            a:active {
+                color: skyblue;
+            }
+        }
     }
-
-    a:hover {
-        color: seagreen;
+    
+    .page {
+        margin-left: @side-width + @content-space;
+        padding-top: 2 * @content-pad;
+        padding-left: 3 * @content-pad;
+        padding-bottom: 2 * @content-pad;
+        background-color: @grey-light;
     }
-
-    a:active {
-        color: skyblue;
-    }
-}
-
-.link {
-    text-align: right;
-}
-
-.page {
-    margin-left: @nav-width + 2 * @content-pad + @content-space;
-    padding-top: 2 * @content-pad;
-    padding-left: 3 * @content-pad;
-    padding-bottom: 2 * @content-pad;
-    background-color: @grey-light;
 }

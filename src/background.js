@@ -1,22 +1,23 @@
 import React from 'react';
+import randomColor from 'randomcolor';
+
 import { setupCanvas } from './utils.js';
 
 
-const N = 3000;
-const MOUSE_FORCE = 5;
-const RESTORE = 1;
-const DRAG = 0.025;
-const VAR = 0;
+export const N = 500;
 
-const MOUSE = {
-    x: 0,
-    y: 0
+// current mouse location
+export const Mouse = {
+    x: undefined,
+    y: undefined
 };
 
-const mouseListener = (e) => {
-    MOUSE.x = parseInt(e.clientX);
-    MOUSE.y = parseInt(e.clientY);
-}
+// forces
+export const CURSOR = 4;
+export const RESTORE = 2;
+export const DRAG = 0.025;
+export const G = -0.01;
+
 
 
 class Symbol {
@@ -25,21 +26,26 @@ class Symbol {
          * Random unicode from Math Operators block:
          *  https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
          */
-        this.symbol = String.fromCharCode(0x2200 + Math.random() * (0x22FF-0x2200+1));
+        //this.symbol = String.fromCharCode(0x2200 + Math.random() * (0x22FF-0x2200+1));
+        this.r = Math.floor(Math.random() * 20 + 2);
+        this.color = randomColor({
+            luminosity: 'light',
+            hue: 'green'
+        });
         this.x = Math.floor(Math.random() * w);
-        this.y = Math.floor(Math.random() * h);
-        this.dx = Math.floor(2 * VAR * Math.random() - VAR)
-        this.dy = Math.floor(2 * VAR * Math.random() - VAR)
+        this.y = Math.floor(4*h/5 + Math.random() * h/5);
+        this.dx = 0;
+        this.dy = 0;
     }
 
     update(w, h) {
-        let mx = this.x - MOUSE.x,
-            my = this.y - MOUSE.y,
+        let mx = this.x - Mouse.x,
+            my = this.y - Mouse.y,
             md = Math.hypot(mx, my),
-            fs = MOUSE_FORCE / (md*md),
-            fl = MOUSE_FORCE / (md);
+            fs = Math.min(CURSOR / (md*md), 5),
+            fl = CURSOR / (md);        
         
-        // reppellent force from mouse
+        // force from mouse
         this.dx += (fs-fl) * (mx/md);
         this.dy += (fs-fl) * (my/md);
 
@@ -53,13 +59,20 @@ class Symbol {
         this.dx -= DRAG * this.dx;
         this.dy -= DRAG * this.dy;
 
+        // gravity
+        this.dy -= G;
+
         // finally update position
         this.x += this.dx;
         this.y += this.dy;
     }
 
     render(ctx) {
-        ctx.fillText(this.symbol, this.x, this.y);
+        //ctx.fillText(this.symbol, this.x, this.y);
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI);
+        ctx.fill();
     }
 }
 
@@ -92,9 +105,12 @@ export default class extends React.Component {
         const [ , , w, h] = this.getCanvasInfo();
 
         // init mouse
-        MOUSE.x = w/2;
-        MOUSE.y = 0;
-        window.addEventListener("mousemove", mouseListener);
+        window.addEventListener("mousemove", (e) => {
+            e.preventDefault();   
+            e.stopPropagation();
+            Mouse.x = parseInt(e.clientX);
+            Mouse.y = parseInt(e.clientY);
+        });
         
         this.symbols = Array.from(
             {length: N},
@@ -108,7 +124,8 @@ export default class extends React.Component {
         const [cvs, ctx, w, h] = this.getCanvasInfo();
         
         // update all
-        for (let sym of this.symbols) sym.update(w, h);
+        if (Mouse.x && Mouse.y)
+            for (let sym of this.symbols) sym.update(w, h);
 
         // fill background
         ctx.fillStyle = "#ECEDEF";

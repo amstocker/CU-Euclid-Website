@@ -106,7 +106,7 @@ class Odometer {
             let base = this.bases[N-j];
             for (let i = 0; i < base.length; i++) {
                 let seg = base[i];
-                if (this.selected >> j == i) {
+                if (this.selected !== undefined && this.selected >> j == i) {
                     ctx.fillStyle = SELECTED_COLOR;
                 } else {
                     ctx.fillStyle = GRID_COLOR;
@@ -120,7 +120,7 @@ class Odometer {
         };
 
         // draw label
-        if (this.selected > -1) {
+        if (this.selected !== undefined) {
             ctx.fillStyle = FONT_COLOR;
             ctx.font = FONT;
             ctx.fillText(this.coord_to_text(this.selected), abs_x + 0, abs_y - this.thickness - 10);

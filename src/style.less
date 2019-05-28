@@ -5,6 +5,7 @@
 @grey-dark: #e1e4e8;
 @grey-med: #ecedef;
 @grey-light: #fafbfc;
+@grey-med-light: darken(@grey-light, 2%);
 
 // Vars
 @side-width: 180px;
@@ -12,7 +13,7 @@
 @content-width: 960px;
 @content-pad: 10px;
 @content-space: 6px;
-@div-bg-opacity: 85%;
+@div-bg-opacity: 77%;
 
 
 html {
@@ -52,7 +53,7 @@ body {
             margin-bottom: @content-pad;
             padding: @content-pad;
             border-right: @side-border solid @grey-med;
-            background-color: fade(@grey-light, @div-bg-opacity);
+            background-color: fade(@grey-med-light, @div-bg-opacity);
         
             img {
                 width: 100%;
@@ -77,7 +78,7 @@ body {
         .nav {
             padding: @content-pad;
             border-right: @side-border solid @grey-med;
-            background-color: fade(@grey-light, @div-bg-opacity);
+            background-color: fade(@grey-med-light, @div-bg-opacity);
         }
         
         .link {
@@ -97,6 +98,6 @@ body {
         padding-left: 3 * @content-pad;
         padding-right: 4 * @content-pad;
         padding-bottom: 5 * @content-pad;
-        background-color: fade(@grey-light, @div-bg-opacity);
+        //background-color: fade(@grey-light, @div-bg-opacity);
     }
 }

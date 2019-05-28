@@ -1,5 +1,8 @@
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+      main: './src/index.js',
+      "projects/odometer": './src/projects/odometer.js'
+  },
   module: {
     rules: [
       {
@@ -19,7 +22,7 @@ module.exports = {
   output: {
     path: __dirname + '/dist',
     publicPath: '/',
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   devServer: {
     contentBase: './dist'

@@ -4,8 +4,8 @@ import randomColor from 'randomcolor';
 import { setupCanvas } from './utils.js';
 
 
-const N = 200;
-const Colors = ['green', 'pink', 'blue', 'purple'];
+const N = 40;
+const Colors = ['green'];
 const Center = (w, h) => [w/2, 4*h/5];
 
 // current mouse location
@@ -15,7 +15,7 @@ export const Mouse = {
 };
 
 // forces
-const MOUSE = 4;
+const MOUSE = 3;
 const RESTORE = 2;
 const DRAG = 0.025;
 const CENTER = 4.2;
@@ -28,7 +28,7 @@ class Thing {
          *  https://en.wikipedia.org/wiki/Mathematical_operators_and_symbols_in_Unicode
          */
         //this.symbol = String.fromCharCode(0x2200 + Math.random() * (0x22FF-0x2200+1));
-        this.r = Math.random() * 15 + 2;
+        this.r = Math.random() * 10 + 2;
         this.m = 0.1 * this.r;
         this.color = randomColor({
             luminosity: 'light',
@@ -45,8 +45,8 @@ class Thing {
     update(w, h) {
         const mx = this.x - Mouse.x,
               my = this.y - Mouse.y,
-              md = Math.max(Math.hypot(mx, my), 0.1),
-              fs = Math.min(MOUSE / (md*md), 5),
+              md = Math.max(Math.hypot(mx, my), 5/MOUSE),
+              fs = MOUSE / (md*md),
               fl = MOUSE / (md);
         
         // force from mouse

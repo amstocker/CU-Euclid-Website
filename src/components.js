@@ -13,7 +13,6 @@ export class Header extends React.Component {
                 <img src="./me.jpg"></img>
                 <div className={"info"} >
                     {"Andrew Stocker"}<br></br>
-                    {"Boulder, CO"}
                 </div>
                 <a href={"mailto:andrew.stocker@colorado.edu"} >{"email"}</a>
                 <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>

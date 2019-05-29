@@ -22,7 +22,6 @@ const ACTION_COLORS = Array
     .from(Array(ACTION_ITERS).keys())
     .map((i) => interpolateHex(SELECTED_COLOR, GRID_COLOR, i*(1/ACTION_ITERS)));
 
-
 const Mouse = {
     x: 0,
     y: 0
@@ -34,7 +33,6 @@ class Odometer {
         this.size = size;
         this.thickness = thickness;
 
-        // make segments
         this.segments = [[0, this.size]];
         this.bases = [this.segments];
         for (let i = 0; i < N; i++) {
@@ -52,7 +50,6 @@ class Odometer {
     }
 
     seg_to_coord (seg) {
-        // coord is an integer between 0 and (2^N - 1)
         return Math.floor((seg[0]/this.size) * (2**N))
     }
 
@@ -66,8 +63,8 @@ class Odometer {
 
     coord_to_text (coord) {
         let t = "(";
-        for (let i = 0; i < N; i++) {
-            t += Number((coord & (1 << (N-i-1))) != 0)  + ", ";
+        for (let i = N - 1; i >= 0; i--) {
+            t += Number((coord & 1 << i) >> i)  + ", ";
         };
         t += "...)"
         return t;
@@ -93,15 +90,16 @@ class Odometer {
     }
 
     render (ctx, abs_x, abs_y) {
-        // draw Cantor grid
-        ctx.fillStyle = GRID_COLOR;
         for (let i = 0; i < this.segments.length; i++) {
             let seg = this.segments[i];
             ctx.fillStyle = (i == this.selected) ? SELECTED_COLOR : GRID_COLOR;
-            ctx.fillRect(abs_x+seg[0], abs_y-this.thickness, seg[1]-seg[0], this.thickness);
+            ctx.fillRect(
+                abs_x+seg[0],
+                abs_y-this.thickness,
+                seg[1]-seg[0],
+                this.thickness);
         };
 
-        // draw base sets
         for (let j = 1; j < N; j++) {
             let base = this.bases[N-j];
             for (let i = 0; i < base.length; i++) {
@@ -119,11 +117,13 @@ class Odometer {
             };
         };
 
-        // draw label
         if (this.selected !== undefined) {
             ctx.fillStyle = FONT_COLOR;
             ctx.font = FONT;
-            ctx.fillText(this.coord_to_text(this.selected), abs_x + 0, abs_y - this.thickness - 10);
+            ctx.fillText(
+                this.coord_to_text(this.selected),
+                abs_x + 0,
+                abs_y - this.thickness - 10);
         };
     }
 };
@@ -155,7 +155,6 @@ class Main extends React.Component {
     componentDidMount() {
         const [ , , w, h] = this.getCanvasInfo();
 
-        // init mouse
         window.addEventListener("mousemove", (e) => {
             e.preventDefault();   
             e.stopPropagation();
@@ -171,13 +170,8 @@ class Main extends React.Component {
         let abs_x = (w - this.odometer.size)/2,
             abs_y = 1/3*h;
         
-        // clear background
         ctx.clearRect(0, 0, w, h);
-
-        // update odometer
         this.odometer.update(ctx, abs_x, abs_y);
-
-        // draw odometer
         this.odometer.render(ctx, abs_x, abs_y);
 
         window.requestAnimationFrame(this.animate);

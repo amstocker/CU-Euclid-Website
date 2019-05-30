@@ -32,7 +32,6 @@ class Odometer {
     constructor (size, thickness) {
         this.size = size;
         this.thickness = thickness;
-
         this.segments = [[0, this.size]];
         this.bases = [this.segments];
         for (let i = 0; i < N; i++) {
@@ -45,8 +44,7 @@ class Odometer {
             this.segments = new_segments;
             this.bases.push(this.segments);
         };
-        
-        this.selected = undefined;
+        this.selected = 0;
     }
 
     seg_to_coord (seg) {
@@ -64,7 +62,7 @@ class Odometer {
     coord_to_text (coord) {
         let t = "(";
         for (let i = N - 1; i >= 0; i--) {
-            t += Number((coord & 1 << i) >> i)  + ", ";
+            t += ((coord & 1 << i) >> i)  + ", ";
         };
         t += "...)"
         return t;
@@ -82,11 +80,13 @@ class Odometer {
 
     update (ctx, abs_x, abs_y) {
         let rel_x = Mouse.x - abs_x;
-        if (rel_x < 0 || rel_x >= this.size) {
-            this.selected = undefined;
-            return;
-        }
-        this.selected = this.pos_to_coord(rel_x);
+        if (rel_x < 0) {
+            this.selected = 0;
+        } else if (rel_x >= this.size) {
+            this.selected = 2**N - 1;
+        } else {
+            this.selected = this.pos_to_coord(rel_x);
+        };
     }
 
     render (ctx, abs_x, abs_y) {
@@ -99,12 +99,11 @@ class Odometer {
                 seg[1]-seg[0],
                 this.thickness);
         };
-
         for (let j = 1; j < N; j++) {
             let base = this.bases[N-j];
             for (let i = 0; i < base.length; i++) {
                 let seg = base[i];
-                if (this.selected !== undefined && this.selected >> j == i) {
+                if (this.selected >> j == i) {
                     ctx.fillStyle = SELECTED_COLOR;
                 } else {
                     ctx.fillStyle = GRID_COLOR;
@@ -116,15 +115,12 @@ class Odometer {
                     BASIS_WIDTH);
             };
         };
-
-        if (this.selected !== undefined) {
-            ctx.fillStyle = FONT_COLOR;
-            ctx.font = FONT;
-            ctx.fillText(
-                this.coord_to_text(this.selected),
-                abs_x + 0,
-                abs_y - this.thickness - 10);
-        };
+        ctx.fillStyle = FONT_COLOR;
+        ctx.font = FONT;
+        ctx.fillText(
+            this.coord_to_text(this.selected),
+            abs_x + 0,
+            abs_y - this.thickness - 10);
     }
 };
 

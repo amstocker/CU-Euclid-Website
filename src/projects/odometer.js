@@ -3,24 +3,19 @@ import ReactDOM from 'react-dom';
 
 import { setupCanvas, interpolateHex } from '../utils.js';
 
-const N = 9;  // number of subdivisions
-
-const SEG_MID = 1;  // pixels
+const N = 8;  // number of subdivisions
+const EXP_N = 2**N;
 
 const FONT = "18px Arial";
 const FONT_COLOR = "black";
 const GRID_COLOR = "#dbdbdb";
 const SELECTED_COLOR = "#f442c5";
 
-const GRID_SIZE = 900;
-const GRID_WIDTH = 50;
-const BASIS_WIDTH = 8;
-const BASIS_SPACING = 2;
+const DIAG_COLOR = "green";
 
-const ACTION_ITERS = 10;
-const ACTION_COLORS = Array
-    .from(Array(ACTION_ITERS).keys())
-    .map((i) => interpolateHex(SELECTED_COLOR, GRID_COLOR, i*(1/ACTION_ITERS)));
+const ORBIT_ITERS = 100;
+const ORBIT_COLOR = "#4286f4";
+const POINT_SIZE = 6;
 
 const Mouse = {
     x: 0,
@@ -28,35 +23,50 @@ const Mouse = {
 };
 
 
-class Odometer {
-    constructor (size, thickness) {
-        this.size = size;
-        this.thickness = thickness;
-        this.segments = [[0, this.size]];
+class CantorSet {
+    constructor (x, y, w, h, vertical, show_bases, highlight) {
+        
+        // constants
+        this.mid = 1;
+        this.spacing = 2;
+
+        this.abs_x = x;
+        this.abs_y = y;
+        this.width = w;
+        this.grid_height = Math.floor((5/13) * h);
+        this.base_height = Math.floor(((1/(N-1)) * (8/13) * h) - this.spacing);
+        
+        this.segments = [[0, this.width]];
         this.bases = [this.segments];
         for (let i = 0; i < N; i++) {
             let new_segments = [];
             for (let seg of this.segments) {
                 let w = seg[1] - seg[0];
-                new_segments.push([seg[0], seg[0]+(w-SEG_MID)/2]);
-                new_segments.push([seg[0]+(w+SEG_MID)/2, seg[1]]);
+                new_segments.push([seg[0], seg[0]+(w-this.mid)/2]);
+                new_segments.push([seg[0]+(w+this.mid)/2, seg[1]]);
             }
             this.segments = new_segments;
             this.bases.push(this.segments);
         };
+
+        this.vertical = vertical;
+        this.show_bases = show_bases;
+        this.highlight = highlight;
+
         this.selected = 0;
     }
 
-    seg_to_coord (seg) {
-        return Math.floor((seg[0]/this.size) * (2**N))
+    set_pos (x, y) {
+        this.abs_x = x;
+        this.abs_y = y;
     }
 
     pos_to_coord (x) {
-        return Math.floor((x/this.size) * (2**N));
+        return Math.floor((x/this.width) * EXP_N);
     }
 
-    coord_to_seg (coord) {
-        return this.segments[coord];
+    coord_to_pos (c) {
+        return Math.floor((c/EXP_N) * this.width);
     }
 
     coord_to_text (coord) {
@@ -66,6 +76,108 @@ class Odometer {
         };
         t += "...)"
         return t;
+    }
+
+    selected_pos () {
+        return this.coord_to_pos(this.selected);
+    }
+
+    selected_text () {
+        return this.coord_to_text(this.selected);
+    }
+
+    selected_bin () {
+        let s = this.selected.toString(2);
+        return "0000000000".substr(s.length + (10 - N)) + s
+    }
+
+    update () {
+        let rel = this.vertical
+                    ? Mouse.y - this.abs_y
+                    : Mouse.x - this.abs_x;
+        if (rel < 0) {
+            this.selected = 0;
+        } else if (rel >= this.width) {
+            this.selected = EXP_N - 1;
+        } else {
+            this.selected = this.pos_to_coord(rel);
+        };
+    }
+
+    draw (ctx) {
+        for (let i = 0; i < this.segments.length; i++) {
+            let seg = this.segments[i];
+            ctx.fillStyle = (this.highlight && i == this.selected) ? SELECTED_COLOR : GRID_COLOR;
+            if (this.vertical) {
+                ctx.fillRect(
+                    this.abs_x - this.grid_height,
+                    this.abs_y + seg[0],
+                    this.grid_height,
+                    seg[1] - seg[0]);
+
+            } else {
+                ctx.fillRect(
+                    this.abs_x + seg[0],
+                    this.abs_y,
+                    seg[1] - seg[0],
+                    this.grid_height);
+            };
+        };
+        if (this.show_bases) {
+            for (let j = 1; j < N; j++) {
+                let base = this.bases[N-j];
+                for (let i = 0; i < base.length; i++) {
+                    let seg = base[i];
+                    if (this.highlight && this.selected >> j == i) {
+                        ctx.fillStyle = SELECTED_COLOR;
+                    } else {
+                        ctx.fillStyle = GRID_COLOR;
+                    };
+                    if (this.vertical) {
+                        ctx.fillRect(
+                            this.abs_x - this.grid_height - j * (this.spacing + this.base_height),
+                            this.abs_y + seg[0],
+                            this.base_height,
+                            seg[1] - seg[0]);
+                    } else {
+                        ctx.fillRect(
+                            this.abs_x + seg[0],
+                            this.abs_y + this.grid_height + this.spacing + (j - 1) * (this.spacing + this.base_height),
+                            seg[1] - seg[0],
+                            this.base_height);
+                    };
+                };
+            };
+        };
+    }
+}
+
+
+class Odometer {
+    constructor (x, y, size) {
+        
+        // constants
+        this.axis_spacing = 4;
+        this.axis_height = 60;
+        
+        this.abs_x = x;
+        this.abs_y = y;
+        this.size = size;
+
+        this.horizontal_axis = new CantorSet(x, y + this.size + this.axis_spacing, this.size, this.axis_height, false, true, true);
+        this.vertical_axis = new CantorSet(x - this.axis_spacing, y, this.size, this.axis_height, true, true, true);
+        
+        this.actions = Array(EXP_N);
+        for (let k = 0; k < EXP_N; k++) {
+            this.actions[k] = this.group_action(k);
+        };
+    }
+
+    set_pos (x, y) {
+        this.abs_x = x;
+        this.abs_y = y;
+        this.horizontal_axis.set_pos(x, y + this.size + this.axis_spacing);
+        this.vertical_axis.set_pos(x - this.axis_spacing, y);
     }
 
     group_action (x) {
@@ -78,51 +190,53 @@ class Odometer {
         return x;
     }
 
-    update (ctx, abs_x, abs_y) {
-        let rel_x = Mouse.x - abs_x;
-        if (rel_x < 0) {
-            this.selected = 0;
-        } else if (rel_x >= this.size) {
-            this.selected = 2**N - 1;
-        } else {
-            this.selected = this.pos_to_coord(rel_x);
-        };
+    update () {
+        this.horizontal_axis.update();
+        this.vertical_axis.update();
     }
 
-    render (ctx, abs_x, abs_y) {
-        for (let i = 0; i < this.segments.length; i++) {
-            let seg = this.segments[i];
-            ctx.fillStyle = (i == this.selected) ? SELECTED_COLOR : GRID_COLOR;
-            ctx.fillRect(
-                abs_x+seg[0],
-                abs_y-this.thickness,
-                seg[1]-seg[0],
-                this.thickness);
-        };
-        for (let j = 1; j < N; j++) {
-            let base = this.bases[N-j];
-            for (let i = 0; i < base.length; i++) {
-                let seg = base[i];
-                if (this.selected >> j == i) {
-                    ctx.fillStyle = SELECTED_COLOR;
-                } else {
-                    ctx.fillStyle = GRID_COLOR;
-                };
-                ctx.fillRect(
-                    abs_x + seg[0],
-                    abs_y + BASIS_SPACING + (j - 1) * (BASIS_SPACING + BASIS_WIDTH),
-                    seg[1]-seg[0],
-                    BASIS_WIDTH);
-            };
-        };
+    draw (ctx) {
+        this.horizontal_axis.draw(ctx);
+        this.vertical_axis.draw(ctx);
+
+        ctx.beginPath();
+        ctx.moveTo(this.abs_x, this.abs_y + this.size);
+        ctx.lineTo(this.abs_x + this.size, this.abs_y);
+        ctx.strokeStyle = DIAG_COLOR;
+        ctx.stroke();
+
+        ctx.fillStyle = SELECTED_COLOR;
+        ctx.fillRect(this.abs_x + this.horizontal_axis.selected_pos() - POINT_SIZE/2,
+                     this.abs_y + this.vertical_axis.selected_pos() - POINT_SIZE/2,
+                     POINT_SIZE,
+                     POINT_SIZE);
+
+        let c = this.horizontal_axis.selected;
+        ctx.fillStyle = ORBIT_COLOR;
+        for (let k = 0; k < ORBIT_ITERS; k++) {
+            ctx.fillRect(this.abs_x + this.horizontal_axis.coord_to_pos(c) - POINT_SIZE/2,
+                         this.abs_y + this.vertical_axis.coord_to_pos(this.actions[c]) - POINT_SIZE/2,
+                         POINT_SIZE,
+                         POINT_SIZE);
+            c = this.actions[c];
+        }
+        
         ctx.fillStyle = FONT_COLOR;
         ctx.font = FONT;
+        ctx.textBaseline = "bottom";
+        ctx.textAlign = "right";
         ctx.fillText(
-            this.coord_to_text(this.selected),
-            abs_x + 0,
-            abs_y - this.thickness - 10);
+            this.horizontal_axis.selected_text(),
+            this.abs_x + this.size,
+            this.abs_y + this.size);
+        ctx.textBaseline = "top";
+        ctx.textAlign = "left";
+        ctx.fillText(
+            this.vertical_axis.selected_text(),
+            this.abs_x,
+            this.abs_y);
     }
-};
+}
 
 
 class Main extends React.Component {
@@ -131,13 +245,13 @@ class Main extends React.Component {
         this.canvas = React.createRef();
         this.animate = this.animate.bind(this);
 
-        this.odometer = new Odometer(GRID_SIZE, GRID_WIDTH);
+        this.odometer = new Odometer(0, 0, 700);
     }
 
     render() {
-        return (<>
+        return (
             <canvas className={"fullscreen"} ref={this.canvas} ></canvas>
-        </>);
+        );
     }
 
     getCanvasInfo() {
@@ -149,13 +263,12 @@ class Main extends React.Component {
     }
 
     componentDidMount() {
-        const [ , , w, h] = this.getCanvasInfo();
-
         window.addEventListener("mousemove", (e) => {
             e.preventDefault();   
             e.stopPropagation();
             Mouse.x = parseInt(e.clientX);
             Mouse.y = parseInt(e.clientY);
+            this.odometer.update();
         });
         
         window.requestAnimationFrame(this.animate);
@@ -164,11 +277,12 @@ class Main extends React.Component {
     animate() {
         const [cvs, ctx, w, h] = this.getCanvasInfo();
         let abs_x = (w - this.odometer.size)/2,
-            abs_y = 1/3*h;
+            abs_y = 50;
+
+        this.odometer.set_pos(abs_x, abs_y);
         
         ctx.clearRect(0, 0, w, h);
-        this.odometer.update(ctx, abs_x, abs_y);
-        this.odometer.render(ctx, abs_x, abs_y);
+        this.odometer.draw(ctx);
 
         window.requestAnimationFrame(this.animate);
     }

@@ -13,7 +13,7 @@ const SELECTED_COLOR = "#f442c5";
 
 const DIAG_COLOR = "green";
 
-const ORBIT_ITERS = 100;
+const ORBIT_ITERS = 50;
 const ORBIT_COLOR = "#4286f4";
 const POINT_SIZE = 6;
 
@@ -24,7 +24,7 @@ const Mouse = {
 
 
 class CantorSet {
-    constructor (x, y, w, h, vertical, show_bases, highlight) {
+    constructor (x, y, w, h, vertical, show_bases, hide) {
         
         // constants
         this.mid = 1;
@@ -51,7 +51,7 @@ class CantorSet {
 
         this.vertical = vertical;
         this.show_bases = show_bases;
-        this.highlight = highlight;
+        this.hide = hide;
 
         this.selected = 0;
     }
@@ -105,9 +105,11 @@ class CantorSet {
     }
 
     draw (ctx) {
+        if (this.hide) return;
+
         for (let i = 0; i < this.segments.length; i++) {
             let seg = this.segments[i];
-            ctx.fillStyle = (this.highlight && i == this.selected) ? SELECTED_COLOR : GRID_COLOR;
+            ctx.fillStyle = (i == this.selected) ? SELECTED_COLOR : GRID_COLOR;
             if (this.vertical) {
                 ctx.fillRect(
                     this.abs_x - this.grid_height,
@@ -128,7 +130,7 @@ class CantorSet {
                 let base = this.bases[N-j];
                 for (let i = 0; i < base.length; i++) {
                     let seg = base[i];
-                    if (this.highlight && this.selected >> j == i) {
+                    if (this.selected >> j == i) {
                         ctx.fillStyle = SELECTED_COLOR;
                     } else {
                         ctx.fillStyle = GRID_COLOR;
@@ -164,8 +166,8 @@ class Odometer {
         this.abs_y = y;
         this.size = size;
 
-        this.horizontal_axis = new CantorSet(x, y + this.size + this.axis_spacing, this.size, this.axis_height, false, true, true);
-        this.vertical_axis = new CantorSet(x - this.axis_spacing, y, this.size, this.axis_height, true, true, true);
+        this.horizontal_axis = new CantorSet(x, y + this.size + this.axis_spacing, this.size, this.axis_height, false, true, false);
+        this.vertical_axis = new CantorSet(x - this.axis_spacing, y, this.size, this.axis_height, true, false, false);
         
         this.actions = Array(EXP_N);
         for (let k = 0; k < EXP_N; k++) {
@@ -213,11 +215,18 @@ class Odometer {
 
         let c = this.horizontal_axis.selected;
         ctx.fillStyle = ORBIT_COLOR;
+        ctx.strokeStyle = ORBIT_COLOR;
         for (let k = 0; k < ORBIT_ITERS; k++) {
             ctx.fillRect(this.abs_x + this.horizontal_axis.coord_to_pos(c) - POINT_SIZE/2,
                          this.abs_y + this.vertical_axis.coord_to_pos(this.actions[c]) - POINT_SIZE/2,
                          POINT_SIZE,
                          POINT_SIZE);
+            // ctx.beginPath();
+            // ctx.moveTo(this.abs_x + this.horizontal_axis.coord_to_pos(c),
+            //            this.abs_y + this.vertical_axis.coord_to_pos(this.actions[c]));
+            // ctx.lineTo(this.abs_x + this.horizontal_axis.coord_to_pos(this.actions[c]),
+            //            this.abs_y + this.vertical_axis.coord_to_pos(this.actions[this.actions[c]]));
+            // ctx.stroke();
             c = this.actions[c];
         }
         
@@ -235,6 +244,10 @@ class Odometer {
             this.vertical_axis.selected_text(),
             this.abs_x,
             this.abs_y);
+
+        ctx.fillText(
+            "Showing orbit of selected x-value as an equivalence relation (up to " + ORBIT_ITERS + " iterations.)",
+            10, 10);
     }
 }
 

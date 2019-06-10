@@ -13,7 +13,7 @@ const SELECTED_COLOR = "#f442c5";
 
 const DIAG_COLOR = "green";
 
-const ORBIT_ITERS = 50;
+const ORBIT_ITERS = 10;
 const ORBIT_COLOR = "#4286f4";
 const POINT_SIZE = 6;
 
@@ -62,11 +62,19 @@ class CantorSet {
     }
 
     pos_to_coord (x) {
-        return Math.floor((x/this.width) * EXP_N);
+        if (this.vertical) {
+            return Math.floor((1 - (x/this.width)) * EXP_N);
+        } else {
+            return Math.floor((x/this.width) * EXP_N);
+        };
     }
 
     coord_to_pos (c) {
-        return Math.floor((c/EXP_N) * this.width);
+        if (this.vertical) {
+            return Math.floor((1 - (c/EXP_N)) * this.width);
+        } else {
+            return Math.floor((c/EXP_N) * this.width);
+        };
     }
 
     coord_to_text (coord) {
@@ -96,9 +104,9 @@ class CantorSet {
                     ? Mouse.y - this.abs_y
                     : Mouse.x - this.abs_x;
         if (rel < 0) {
-            this.selected = 0;
+            this.selected = this.vertical ? EXP_N - 1 : 0;
         } else if (rel >= this.width) {
-            this.selected = EXP_N - 1;
+            this.selected = this.vertical ? 0 : EXP_N - 1;
         } else {
             this.selected = this.pos_to_coord(rel);
         };
@@ -113,7 +121,7 @@ class CantorSet {
             if (this.vertical) {
                 ctx.fillRect(
                     this.abs_x - this.grid_height,
-                    this.abs_y + seg[0],
+                    this.abs_y + this.width - seg[1],
                     this.grid_height,
                     seg[1] - seg[0]);
 
@@ -213,23 +221,20 @@ class Odometer {
                      POINT_SIZE,
                      POINT_SIZE);
 
-        let c = this.horizontal_axis.selected;
         ctx.fillStyle = ORBIT_COLOR;
         ctx.strokeStyle = ORBIT_COLOR;
-        for (let k = 0; k < ORBIT_ITERS; k++) {
-            ctx.fillRect(this.abs_x + this.horizontal_axis.coord_to_pos(c) - POINT_SIZE/2,
-                         this.abs_y + this.vertical_axis.coord_to_pos(this.actions[c]) - POINT_SIZE/2,
-                         POINT_SIZE,
-                         POINT_SIZE);
-            // ctx.beginPath();
-            // ctx.moveTo(this.abs_x + this.horizontal_axis.coord_to_pos(c),
-            //            this.abs_y + this.vertical_axis.coord_to_pos(this.actions[c]));
-            // ctx.lineTo(this.abs_x + this.horizontal_axis.coord_to_pos(this.actions[c]),
-            //            this.abs_y + this.vertical_axis.coord_to_pos(this.actions[this.actions[c]]));
-            // ctx.stroke();
+        let c = this.horizontal_axis.selected;
+        for (let j = 0; j < ORBIT_ITERS; j++) {
+            let d = c;
+            for (let k = 0; k < ORBIT_ITERS; k++) {
+                ctx.fillRect(this.abs_x + this.horizontal_axis.coord_to_pos(c) - POINT_SIZE/2,
+                             this.abs_y + this.vertical_axis.coord_to_pos(d) - POINT_SIZE/2,
+                             POINT_SIZE,
+                             POINT_SIZE);
+                d = this.actions[d];
+            };
             c = this.actions[c];
-        }
-        
+        };
         ctx.fillStyle = FONT_COLOR;
         ctx.font = FONT;
         ctx.textBaseline = "bottom";
@@ -244,10 +249,6 @@ class Odometer {
             this.vertical_axis.selected_text(),
             this.abs_x,
             this.abs_y);
-
-        ctx.fillText(
-            "Showing orbit of selected x-value as an equivalence relation (up to " + ORBIT_ITERS + " iterations.)",
-            10, 10);
     }
 }
 

@@ -1,7 +1,6 @@
 module.exports = {
   entry: {
       main: './src/index.js',
-      "projects/odometer": './src/projects/odometer.js'
   },
   module: {
     rules: [

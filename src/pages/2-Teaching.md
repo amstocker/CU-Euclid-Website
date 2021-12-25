@@ -9,4 +9,4 @@
 
 ## Resources
 
-- [Calculus III Notes](https://drive.google.com/drive/folders/1AyqJ7jfbeH0G-PXHodhvTaRL__vqjD6g?usp=sharing)
+- [Calculus III Notes](https://drive.google.com/drive/folders/1AyqJ7jfbeH0G-PXHodhvTaRL__vqjD6g?usp=sharing) (link only works with a University of Colorado email address, but feel free to email me if you're not from CU and interested)

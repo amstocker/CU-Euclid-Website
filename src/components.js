@@ -10,14 +10,14 @@ export class Header extends React.Component {
     render() {
         return (
             <div className={"header"} >
-                <img src="./me.jpg"></img>
+                <img src="./me2.jpg"></img>
                 <div className={"info"} >
-                    {"Andrew Stocker"}<br></br>
+                    <b>{"Andrew Stocker"}</b><br></br>
                 </div>
                 <a href={"mailto:andrew.stocker@colorado.edu"} >{"email"}</a>
                 <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>
                 <a href={"https://megamaster.bandcamp.com/"} target="_blank" >{"bandcamp"}</a>
-                <a href={"https://www.linkedin.com/in/andrew-stocker-a3967168/"} target="_blank">{"LinkedIn"}</a>
+                <a href={"https://www.linkedin.com/in/andrew-stocker-a3967168/"} target="_blank">{"linkedin"}</a>
             </div>
         );
     }

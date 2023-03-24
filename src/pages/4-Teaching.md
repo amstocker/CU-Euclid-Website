@@ -14,6 +14,6 @@
 
 ## Resources
 
-Feel free to use my Calculus III notes and resources linked below.  Please feel free to let me know if you found them useful or if you find errors.
+Feel free to use my Calculus III notes and resources linked below.  Please also let me know if you found them useful or if you find errors.
 
 - [Calculus III Notes](https://o365coloradoedu-my.sharepoint.com/:f:/g/personal/anst0821_colorado_edu/EqHc8qBQEjJHoso-v7leKpMBIJLZbg_Om4w2vQsLLxv6uA?e=u72PtV)

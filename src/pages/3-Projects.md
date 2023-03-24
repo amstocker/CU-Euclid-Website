@@ -1,5 +1,9 @@
 # Projects
 
+Here a couple projects that I've been working on recently or have worked on in the past.  Not listed here are many programming projects I've undertaken that are currently hosted on [my GitHub page](https://github.com/amstocker).
+
+I am broadly interested in mathematics, programming, music, internet forum culture.  Many of my earliest programming projects are oriented around creating internet discussion platforms, and I'm very interested in how their structure informs the style of discourse.
+
 
 ## Gesture Learning (in progress)
 

@@ -1,5 +1,7 @@
 # Teaching
 
+_If you are a MATH-1212 Data and Models student, please email me for access to our course Google drive._
+
 ## Currently teaching
 
 - Data and Models (Spring 2023)

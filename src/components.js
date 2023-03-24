@@ -14,7 +14,12 @@ export class Header extends React.Component {
                 <div className={"info"} >
                     <b>{"Andrew Stocker"}</b><br></br>
                 </div>
-                <a href={"mailto:andrew.stocker@colorado.edu"} >{"email"}</a>
+                <div className={"address"} >
+                    University of Colorado Boulder<br></br>
+                    Campus Box 395<br></br>
+                    Boulder, CO 80309<br></br>
+                </div>
+                <a href={"mailto:andrew.stocker@colorado.edu"} target="_blank" >{"email"}</a>
                 <a href={"https://github.com/amstocker"} target="_blank" >{"github"}</a>
                 <a href={"https://megamaster.bandcamp.com/"} target="_blank" >{"bandcamp"}</a>
                 <a href={"https://www.linkedin.com/in/andrew-stocker-a3967168/"} target="_blank">{"linkedin"}</a>

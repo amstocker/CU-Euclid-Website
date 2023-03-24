@@ -4,3 +4,4 @@ dist/projects/*.js
 dist/style.css
 export
 npm-debug.log
+.DS_Store
